@@ -1,0 +1,68 @@
+name: ReviewFlow AI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: read
+
+env:
+  REVIEWFLOW_CONFIG: reviewflow.config.example.yml
+
+jobs:
+  ai-review:
+    name: AI PR pre-review
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install project
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .[dev]
+
+      - name: Run tests
+        run: |
+          python -m pytest
+
+      - name: Generate PR diff
+        run: |
+          git fetch origin "${{ github.base_ref }}" --depth=50
+          git diff "origin/${{ github.base_ref }}...HEAD" > pr.diff
+
+      - name: Run ReviewFlow AI
+        run: |
+          python -m reviewflow.cli run \
+            --event-path "$GITHUB_EVENT_PATH" \
+            --diff-path pr.diff \
+            --config "$REVIEWFLOW_CONFIG" \
+            --output-dir .reviewflow \
+            --dry-run
+
+      - name: Upload ReviewFlow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: reviewflow-ai-report
+          path: .reviewflow/
+
+      # Enable this in a later milestone after validating permissions and fork PR behavior.
+      # - name: Post PR comment
+      #   if: github.event.pull_request.head.repo.full_name == github.repository
+      #   run: |
+      #     python -m reviewflow.cli comment \
+      #       --event-path "$GITHUB_EVENT_PATH" \
+      #       --report-path .reviewflow/review-summary.md \
+      #       --config "$REVIEWFLOW_CONFIG"

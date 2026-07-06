@@ -1,0 +1,19 @@
+{
+  "projectKey": "reviewflow-ai-demo",
+  "pullRequestKey": "12",
+  "qualityGate": "FAILED",
+  "newBugs": 1,
+  "newVulnerabilities": 0,
+  "newCodeSmells": 3,
+  "coverageOnNewCode": 62.5,
+  "duplicatedLinesDensity": 1.2,
+  "issues": [
+    {
+      "severity": "MAJOR",
+      "type": "BUG",
+      "component": "src/orders/refund.py",
+      "line": 14,
+      "message": "Authorization logic appears to be disabled."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[project]
+name = "reviewflow-ai"
+version = "0.1.0"
+description = "AI-powered pull request pre-review pipeline."
+requires-python = ">=3.10"
+dependencies = [
+  "PyYAML>=6.0.0",
+  "jsonschema>=4.22.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "ruff>=0.5.0"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

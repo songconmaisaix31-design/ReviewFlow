@@ -44,6 +44,13 @@
 - Run the available tests before final delivery.
 - If a command is unavailable, document the reason and use the strongest local substitute.
 
+## Review Standards
+- P0: secret leak, auth bypass, destructive data loss, payment/order/finance critical bug, or critical dependency vulnerability.
+- P1: likely security issue, transaction consistency issue, missing critical test, or high-risk logic regression.
+- P2: maintainability, error handling, coverage, or quality issue.
+- P3: style, naming, documentation, or minor refactor suggestion.
+- Every finding must include evidence, file path, recommendation, severity, confidence, and source.
+
 ## Deployment And CI
 - GitHub Action must use `pull_request`, not `pull_request_target`.
 - Default permissions should be minimal.

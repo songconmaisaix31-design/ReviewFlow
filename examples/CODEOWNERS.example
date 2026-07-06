@@ -1,0 +1,13 @@
+# Example CODEOWNERS for ReviewFlow AI
+
+* @platform-team
+
+/src/auth/ @auth-team
+/src/orders/ @order-team
+/src/payments/ @payment-team
+/src/reviewflow/ @devops-team
+
+package.json @platform-team @security-team
+requirements.txt @platform-team @security-team
+pyproject.toml @platform-team @security-team
+.github/workflows/ @devops-team

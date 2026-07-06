@@ -1,0 +1,14 @@
+{
+  "number": 12,
+  "pull_request": {
+    "number": 12,
+    "title": "Update refund flow",
+    "user": {"login": "demo-dev"},
+    "base": {"ref": "main", "sha": "base-sha"},
+    "head": {"ref": "feature/refund-update", "sha": "head-sha", "repo": {"full_name": "demo/reviewflow-ai"}},
+    "html_url": "https://github.com/demo/reviewflow-ai/pull/12"
+  },
+  "repository": {
+    "full_name": "demo/reviewflow-ai"
+  }
+}

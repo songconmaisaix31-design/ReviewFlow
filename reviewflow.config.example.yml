@@ -1,0 +1,73 @@
+project:
+  name: reviewflow-ai
+  platform: github
+
+review:
+  dry_run: true
+  max_context_chars: 180000
+  include_history_commits: 5
+  include_related_tests: true
+  include_dependency_files: true
+  include_repository_guidance: true
+
+blocking:
+  fail_on_p0: true
+  fail_on_p1: false
+  fail_on_quality_gate_failed: false
+  fail_on_critical_dependency: true
+
+codex:
+  enabled: true
+  command_env: REVIEWFLOW_CODEX_COMMAND
+  timeout_seconds: 180
+  prompt_path: prompts/codex_review.md
+  output_format: json
+  allow_patch_generation: true
+  auto_push_patch: false
+  offline_stub_when_missing: true
+
+sonarqube:
+  enabled: true
+  input_path: examples/sample_sonar_result.json
+  quality_gate_required: true
+
+dependency:
+  enabled: true
+  alert_input_path: examples/sample_dependabot_alerts.json
+  manifest_patterns:
+    - package.json
+    - package-lock.json
+    - pnpm-lock.yaml
+    - yarn.lock
+    - requirements.txt
+    - pyproject.toml
+    - poetry.lock
+    - go.mod
+    - go.sum
+    - pom.xml
+
+owners:
+  enabled: true
+  codeowners_paths:
+    - .github/CODEOWNERS
+    - CODEOWNERS
+    - docs/CODEOWNERS
+    - examples/CODEOWNERS.example
+  require_code_owner_review: true
+
+report:
+  post_summary_comment: false
+  post_inline_comments: false
+  upload_artifact: true
+  output_json: review-report.json
+  output_markdown: review-summary.md
+  output_context: review-context.json
+
+github:
+  enabled: true
+  dry_run: true
+  token_env: GITHUB_TOKEN
+  repository_env: GITHUB_REPOSITORY
+  event_path_env: GITHUB_EVENT_PATH
+  request_reviewers: false
+  comment_on_pr: false

@@ -2,6 +2,10 @@
 
 ReviewFlow AI is a GitHub pull-request pre-review pipeline. It combines PR diff context, CODEOWNERS routing, SonarQube quality signals, dependency risk signals, and Codex semantic review into a structured report before human Code Owner review.
 
+It also includes a local-first Delivery Audit mode for buyers who need evidence before paying for or launching an AI application.
+
+The Repository Security Scan adds a safe built-in Python AST baseline and aggregates SARIF from specialist scanners without copying external source snippets or possible secret values into ReviewFlow artifacts.
+
 ## MVP Scope
 
 Included:
@@ -43,6 +47,74 @@ Expected outputs:
 ```
 
 The bundled sample intentionally produces a `HIGH` / `WARNING` report because it contains an authorization bypass signal and a high-severity dependency alert. The command still exits `0` with the example config because `fail_on_p1` is disabled for local demo runs.
+
+## Delivery Audit
+
+Run a deterministic repository evidence audit without external credentials:
+
+```bash
+python -m reviewflow.cli audit \
+  --repo-path . \
+  --evidence-path examples/delivery_evidence.json \
+  --output-dir .reviewflow-audit
+```
+
+Expected outputs:
+
+```text
+.reviewflow-audit/delivery-audit.json
+.reviewflow-audit/delivery-audit.md
+.reviewflow-audit/delivery-audit.html
+.reviewflow-audit/content-brief.md
+.reviewflow-audit/content-candidates.json
+.reviewflow-audit/content-candidates.md
+.reviewflow-audit/wiki-capsule.json
+```
+
+The content brief contains no source code or client paths and can enter the Cheat on Content blind-prediction and T+3 retrospective loop. The audit does not certify security or infer production acceptance from repository structure.
+
+To append the generated candidate to an initialized local Cheat on Content project:
+
+```bash
+python -m reviewflow.cli sync-content \
+  --audit-path .reviewflow-audit/delivery-audit.json \
+  --content-project ../my-content-project
+```
+
+The target must contain `.cheat-state.json`. Repeating the command with the same audit is safe: an existing candidate ID is skipped. `wiki-capsule.json` is review input only; ReviewFlow never writes directly into the Personal Wiki.
+
+## Repository Security Scan
+
+Run the offline built-in scan:
+
+```bash
+python -m reviewflow.cli scan \
+  --repo-path . \
+  --output-dir .reviewflow-scan \
+  --fail-on P1
+```
+
+Import SARIF from specialist scanners when available:
+
+```bash
+python -m reviewflow.cli scan \
+  --repo-path . \
+  --output-dir .reviewflow-scan \
+  --sarif codeql.sarif \
+  --sarif semgrep.sarif \
+  --sarif trivy.sarif \
+  --fail-on P1
+```
+
+Expected outputs:
+
+```text
+.reviewflow-scan/security-scan.json
+.reviewflow-scan/security-scan.md
+.reviewflow-scan/security-scan.sarif
+```
+
+Built-in checks cover common Python execution, injection, TLS, deserialization, temporary-file, weak-hash, timeout, exception, and mutable-default defects plus GitHub Actions and tracked sensitive-filename boundaries. A clean result is not proof of security; use CodeQL/Semgrep for deeper source analysis, OSV-Scanner/Trivy for dependencies and deployment artifacts, and Gitleaks for dedicated secret-history scanning.
 
 ## Codex Integration
 

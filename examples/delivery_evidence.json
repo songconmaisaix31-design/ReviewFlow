@@ -1,0 +1,17 @@
+{
+  "claims": [
+    {
+      "claim": "The project can generate deterministic offline review reports.",
+      "evidence_paths": [
+        "reviewflow/cli.py",
+        "tests/test_cli_smoke.py"
+      ]
+    },
+    {
+      "claim": "The project includes a documented local smoke workflow.",
+      "evidence_paths": [
+        "README.md"
+      ]
+    }
+  ]
+}

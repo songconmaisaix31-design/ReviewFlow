@@ -12,6 +12,8 @@ dist/
 build/
 *.egg-info/
 .reviewflow/
+.reviewflow-audit/
+.reviewflow-scan/
 coverage.xml
 htmlcov/
 .DS_Store
